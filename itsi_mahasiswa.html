@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistem Informasi Mahasiswa ITSI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    background: #eaf0f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 550px;
+    max-width: 100%;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,.15);
+}
+
+.header {
+    background: #124e78;
+    color: white;
+    text-align: center;
+    padding: 22px;
+}
+
+.header h1 { margin: 0; }
+
+.header p { color: white; }
+
+.content {
+    padding: 25px;
+    min-height: 430px;
+}
+
+.frame { display: none; }
+.frame.active { display: block; }
+
+h2 {
+    text-align: center;
+    color: #124e78;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 7px;
+    background: #124e78;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover { background: #1976a8; }
+
+.back { background: #687782; }
+
+.logo {
+    width: 100px;
+    height: 100px;
+    border: 5px solid #124e78;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+    color: #124e78;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.book {
+    padding: 12px;
+    margin: 12px 0;
+    background: #f0f5fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.book h3 { color: #124e78; }
+
+.message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.success { color: green; }
+.error { color: red; }
+
+.total {
+    padding: 12px;
+    background: #edf3fa;
+    text-align: center;
+    font-weight: bold;
+    color: #124e78;
+    margin-top: 15px;
+}
+
+.footer {
+    background: #124e78;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+    <h1>ITSI</h1>
+    <p>Sistem Informasi Akademik Mahasiswa</p>
+    <p>Institut Teknologi Sawit Indonesia</p>
+</div>
+
+<div class="content">
+
+<!-- FRAME 1 -->
+<div id="frame1" class="frame active">
+    <div class="logo">ITSI</div>
+    <h2>SELAMAT DATANG DI ITSI</h2>
+    <p style="text-align:center">
+        Selamat datang di Sistem Informasi Mahasiswa ITSI.
+        Silakan gunakan layanan pendaftaran mahasiswa,
+        pengisian KRS, dan perpustakaan digital.
+    </p>
+    <button onclick="bukaFrame(2)">MULAI</button>
+</div>
+
+<!-- FRAME 2 -->
+<div id="frame2" class="frame">
+    <h2>PENDAFTARAN MAHASISWA</h2>
+
+    <form id="formMahasiswa">
+        <label>Nama Lengkap</label>
+        <input id="nama" required placeholder="Masukkan nama lengkap">
+
+        <label>NIM</label>
+        <input id="nim" required placeholder="Masukkan NIM">
+
+        <label>Program Studi</label>
+        <select id="prodi" required>
+            <option value="">Pilih Program Studi</option>
+            <option>Teknik Informatika</option>
+            <option>Sistem Informasi</option>
+            <option>Manajemen Informatika</option>
+            <option>Teknik Komputer</option>
+        </select>
+
+        <label>Email</label>
+        <input id="email" type="email" required placeholder="nama@email.com">
+
+        <button type="submit">DAFTAR MAHASISWA</button>
+    </form>
+
+    <button class="back" onclick="bukaFrame(1)">KEMBALI</button>
+    <div id="pesanDaftar" class="message"></div>
+</div>
+
+<!-- FRAME 3 -->
+<div id="frame3" class="frame">
+    <h2>PENGISIAN KRS</h2>
+
+    <label>Nama Mahasiswa</label>
+    <input id="namaKRS" readonly>
+
+    <label>NIM</label>
+    <input id="nimKRS" readonly>
+
+    <label>Pilih Mata Kuliah</label>
+    <select id="matkul">
+        <option value="">Pilih Mata Kuliah</option>
+        <option value="3">Pemrograman Web (3 SKS)</option>
+        <option value="3">Basis Data (3 SKS)</option>
+        <option value="3">Struktur Data (3 SKS)</option>
+        <option value="2">Sistem Operasi (2 SKS)</option>
+        <option value="3">Kecerdasan Buatan (3 SKS)</option>
+        <option value="2">Interaksi Manusia dan Komputer (2 SKS)</option>
+    </select>
+
+    <button onclick="tambahKRS()">TAMBAH MATA KULIAH</button>
+
+    <h3>Daftar Mata Kuliah:</h3>
+    <div id="daftarKRS"></div>
+
+    <div class="total">
+        TOTAL SKS: <span id="totalSKS">0</span>
+    </div>
+
+    <button onclick="simpanKRS()">SIMPAN KRS</button>
+    <button class="back" onclick="bukaFrame(2)">KEMBALI</button>
+
+    <div id="pesanKRS" class="message"></div>
+</div>
+
+<!-- FRAME 4 -->
+<div id="frame4" class="frame">
+    <h2>ANGGOTA PERPUSTAKAAN</h2>
+
+    <label>Nama Mahasiswa</label>
+    <input id="namaPerpus" readonly>
+
+    <label>NIM</label>
+    <input id="nimPerpus" readonly>
+
+    <label>Jenis Keanggotaan</label>
+    <select id="jenisAnggota">
+        <option>Mahasiswa</option>
+        <option>Mahasiswa Aktif</option>
+    </select>
+
+    <button onclick="gabungPerpus()">
+        DAFTAR ANGGOTA PERPUSTAKAAN
+    </button>
+
+    <div id="pesanPerpus" class="message"></div>
+
+    <button class="back" onclick="bukaFrame(3)">KEMBALI KE KRS</button>
+</div>
+
+<!-- FRAME 5 -->
+<div id="frame5" class="frame">
+    <h2>PERPUSTAKAAN DIGITAL</h2>
+    <p>Silakan pilih buku yang ingin diunduh.</p>
+
+    <div id="katalogBuku"></div>
+
+    <button class="back" onclick="bukaFrame(4)">KEMBALI</button>
+</div>
+
+</div>
+
+<div class="footer">
+    ITSI | SISTEM INFORMASI AKADEMIK DAN PERPUSTAKAAN DIGITAL
+</div>
+
+</div>
+
+<script>
+
+// DATA LOCAL STORAGE
+let mahasiswa = JSON.parse(localStorage.getItem("mahasiswaITSI")) || null;
+let krs = JSON.parse(localStorage.getItem("krsITSI")) || [];
+let anggota = localStorage.getItem("anggotaITSI") === "true";
+
+// NAVIGASI FRAME
+function bukaFrame(n) {
+    if (n >= 3 && !mahasiswa) {
+        alert("Silakan daftar mahasiswa terlebih dahulu!");
+        return;
+    }
+
+    if (n === 4 && krs.length === 0) {
+        alert("Silakan isi KRS terlebih dahulu!");
+        return;
+    }
+
+    if (n === 5 && !anggota) {
+        alert("Silakan daftar anggota perpustakaan!");
+        return;
+    }
+
+    document.querySelectorAll(".frame").forEach(f => {
+        f.classList.remove("active");
+    });
+
+    document.getElementById("frame" + n).classList.add("active");
+}
+
+// PESAN
+function pesan(id, teks, berhasil) {
+    const e = document.getElementById(id);
+    e.textContent = teks;
+    e.className = berhasil ? "message success" : "message error";
+}
+
+// PENDAFTARAN MAHASISWA
+document.getElementById("formMahasiswa").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const nama = document.getElementById("nama").value.trim();
+    const nim = document.getElementById("nim").value.trim();
+    const prodi = document.getElementById("prodi").value;
+    const email = document.getElementById("email").value.trim();
+
+    if (!nama || !nim || !prodi || !email) {
+        pesan("pesanDaftar", "Semua data wajib diisi!", false);
+        return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        pesan("pesanDaftar", "Format email tidak valid!", false);
+        return;
+    }
+
+    mahasiswa = {nama, nim, prodi, email};
+
+    localStorage.setItem("mahasiswaITSI", JSON.stringify(mahasiswa));
+
+    document.getElementById("namaKRS").value = nama;
+    document.getElementById("nimKRS").value = nim;
+    document.getElementById("namaPerpus").value = nama;
+    document.getElementById("nimPerpus").value = nim;
+
+    pesan("pesanDaftar", "Pendaftaran berhasil!", true);
+    bukaFrame(3);
+});
+
+// TAMBAH KRS
+function tambahKRS() {
+    const s = document.getElementById("matkul");
+    const nama = s.options[s.selectedIndex].text;
+    const sks = Number(s.value);
+
+    if (!sks) {
+        pesan("pesanKRS", "Pilih mata kuliah dahulu!", false);
+        return;
+    }
+
+    if (krs.some(x => x.nama === nama)) {
+        pesan("pesanKRS", "Mata kuliah sudah dipilih!", false);
+        return;
+    }
+
+    const total = krs.reduce((a, b) => a + b.sks, 0);
+
+    if (total + sks > 24) {
+        pesan("pesanKRS", "Maksimal pengambilan adalah 24 SKS!", false);
+        return;
+    }
+
+    krs.push({nama, sks});
+
+    localStorage.setItem("krsITSI", JSON.stringify(krs));
+
+    s.value = "";
+    tampilKRS();
+
+    pesan("pesanKRS", "Mata kuliah berhasil ditambahkan!", true);
+}
+
+// TAMPIL KRS
+function tampilKRS() {
+    const daftar = document.getElementById("daftarKRS");
+    daftar.innerHTML = "";
+
+    let total = 0;
+
+    krs.forEach((x, i) => {
+        total += x.sks;
+
+        const div = document.createElement("div");
+        div.className = "book";
+
+        const p = document.createElement("p");
+        p.textContent = x.nama + " - " + x.sks + " SKS";
+
+        const btn = document.createElement("button");
+        btn.textContent = "HAPUS MATA KULIAH";
+        btn.onclick = () => hapusKRS(i);
+
+        div.append(p, btn);
+        daftar.appendChild(div);
+    });
+
+    document.getElementById("totalSKS").textContent = total;
+}
+
+// HAPUS KRS
+function hapusKRS(i) {
+    krs.splice(i, 1);
+    localStorage.setItem("krsITSI", JSON.stringify(krs));
+    tampilKRS();
+    pesan("pesanKRS", "Mata kuliah berhasil dihapus!", true);
+}
+
+// SIMPAN KRS
+function simpanKRS() {
+    if (krs.length === 0) {
+        pesan("pesanKRS", "Pilih minimal satu mata kuliah!", false);
+        return;
+    }
+
+    pesan("pesanKRS", "KRS berhasil disimpan!", true);
+
+    setTimeout(() => bukaFrame(4), 1000);
+}
+
+// DAFTAR PERPUSTAKAAN
+function gabungPerpus() {
+    anggota = true;
+
+    localStorage.setItem("anggotaITSI", "true");
+
+    pesan("pesanPerpus", "Selamat! Anda berhasil menjadi anggota perpustakaan ITSI.", true);
+
+    setTimeout(() => {
+        tampilBuku();
+        bukaFrame(5);
+    }, 1000);
+}
+
+// DATA BUKU
+const buku = [
+    {
+        judul: "Buku Pemrograman Web",
+        penulis: "Andi Setiawan",
+        deskripsi: "Materi HTML, CSS, dan JavaScript.",
+        isi: "MODUL PEMROGRAMAN WEB\n\nBAB 1 HTML\nHTML membuat struktur halaman web.\n\nBAB 2 CSS\nCSS mengatur tampilan website.\n\nBAB 3 JAVASCRIPT\nJavaScript membuat website interaktif."
+    },
+    {
+        judul: "Buku Basis Data",
+        penulis: "Budi Santoso",
+        deskripsi: "Materi database dan SQL.",
+        isi: "MODUL BASIS DATA\n\nBAB 1 DATABASE\nDatabase adalah kumpulan data.\n\nBAB 2 TABEL\nTabel digunakan menyimpan data.\n\nBAB 3 SQL\nSQL digunakan mengelola database."
+    },
+    {
+        judul: "Buku Sistem Operasi",
+        penulis: "Rudi Hartono",
+        deskripsi: "Materi proses dan memori.",
+        isi: "MODUL SISTEM OPERASI\n\nBAB 1 SISTEM OPERASI\nMengatur sumber daya komputer.\n\nBAB 2 PROSES\nProgram yang sedang dijalankan.\n\nBAB 3 MEMORI\nTempat penyimpanan data sementara."
+    },
+    {
+        judul: "Buku Kecerdasan Buatan",
+        penulis: "Dewi Anggraini",
+        deskripsi: "Materi Artificial Intelligence.",
+        isi: "MODUL KECERDASAN BUATAN\n\nBAB 1 AI\nTeknologi kecerdasan buatan.\n\nBAB 2 MACHINE LEARNING\nBagian dari AI.\n\nBAB 3 DEEP LEARNING\nMenggunakan jaringan saraf tiruan."
+    }
+];
+
+// KATALOG BUKU
+function tampilBuku() {
+    const katalog = document.getElementById("katalogBuku");
+    katalog.innerHTML = "";
+
+    buku.forEach((b, i) => {
+        const div = document.createElement("div");
+        div.className = "book";
+
+        const h = document.createElement("h3");
+        h.textContent = (i + 1) + ". " + b.judul;
+
+        const p = document.createElement("p");
+        p.textContent = "Penulis: " + b.penulis;
+
+        const d = document.createElement("p");
+        d.textContent = "Deskripsi: " + b.deskripsi;
+
+        const f = document.createElement("p");
+        f.textContent = "Format: TXT";
+
+        const btn = document.createElement("button");
+        btn.textContent = "DOWNLOAD BUKU";
+        btn.onclick = () => downloadBuku(b);
+
+        div.append(h, p, d, f, btn);
+        katalog.appendChild(div);
+    });
+}
+
+// DOWNLOAD BUKU
+function downloadBuku(b) {
+    const blob = new Blob(
+        [b.isi],
+        {type: "text/plain;charset=utf-8"}
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = b.judul + ".txt";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// PULIHKAN DATA
+if (mahasiswa) {
+    document.getElementById("namaKRS").value = mahasiswa.nama;
+    document.getElementById("nimKRS").value = mahasiswa.nim;
+    document.getElementById("namaPerpus").value = mahasiswa.nama;
+    document.getElementById("nimPerpus").value = mahasiswa.nim;
+}
+
+tampilKRS();
+
+</script>
+</body>
+</html>
